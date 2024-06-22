@@ -1,8 +1,9 @@
-# Symbionte Prototype
+# Symbionte - Request for Comments
 
-**NOTE: THIS IS A PROTOTYPE**
+> [!IMPORTANT]  
+> This a prototype to challenge the idea come up with a concept of dealing and managing monitoring events.
 
-The `Symbiote Prototype` consumes `OpenNMS Horizon` events (implementd), alarms (not implemented) and nodes (not implemented) to allow working on the conceptional debt mentioned [here](https://opennms.discourse.group/t/the-future-of-opennms-horizon/3952).
+The `Symbiote Prototype` consumes `OpenNMS Horizon` events (implemented), alarms (not implemented) and nodes (not implemented) to allow working on the conceptional debt mentioned [here](https://opennms.discourse.group/t/the-future-of-opennms-horizon/3952).
 
 ## What does it do
 
@@ -11,8 +12,6 @@ The `Symbiote` listens to `OpenNMS Horizon` events - sent by the `KafkaEventProd
 Besides this it implements a very basic event escalation model (similar to the OpenNMS Horizon's one). If an event is escalated to an alarm, it is persisted to a (temporary) postgres database table: `alarms`.
 
 ## Alarm Definition Model
-
-**NOTE: This is a prototype, proof-of-concept**
 
 An alarm is defined as follows:
 
@@ -45,11 +44,8 @@ At the moment the alarm definitions are automatically calculated on the basis of
 
 ### Alarm Propagation
 
-**NOTE: This is a prototype, proof-of-concept**
-
 If an alarm is created, an according `alarmPropagation/${originalEvent.uei}` event is sent out, with a consolidation key of `"alarmPropagation/${originalEvent.consolidationKey}/level=${originalEvent.level == null ? 0 : 1}:${originalEvent.level == null ? 1 : originalEvelt.level + 1}"`.
 This allows for alarm definitions to "listen" for these events and therefore allow implementing a very basic alarm propagation model.
-
 
 ```
 UEI: alarmPropagation/uei.opennms.org/nodes/nodeDown
@@ -86,8 +82,6 @@ At the moment there are two implementations available by default:
 
 ## Event Model
 
-**NOTE: This is a prototype, proof-of-concept**
-
 There are two implemented event models: `EventLogEntity` and `EventDTO`.
 At the moment only `EventDTO` is used.
 
@@ -95,7 +89,6 @@ The goal here is to find a generic, but yet concrete enough data model to work o
 For example the `properties` and `payload` in there could be used both, or just one, depending on how we want to model things. Whereas the `EventLogEntity` is probably too close to the original `OpenNMS Horizon` event data model.
 
 TL;DR: Model works for this use case but obviously not in a "productive" system.
-
 
 ## How to get it started
 
@@ -114,7 +107,6 @@ Install and configure the `Kafka Producer`.
 Installation guide: https://docs.opennms.com/horizon/30/operation/kafka-producer/enable-kafka.html
 
 Configuration guide: https://docs.opennms.com/horizon/30/operation/kafka-producer/configure-kafka.html
-
 
 TL;DR: 
 

@@ -1,0 +1,26 @@
+---
+name: symbiote-build
+run-name: Build and run test suites
+on:
+  push:
+
+jobs:
+  quick-smoke:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/bluebird/java-builder:0.0.1.jdk-21.b24
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build from source without expensive tasks
+        run: |
+          make
+      - name: Run tests
+        run: |
+          make tests
+      - name: Persist build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventbus-jar
+          path: target/eventbus-*.jar
