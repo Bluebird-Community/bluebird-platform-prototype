@@ -15,7 +15,6 @@
     <properties>
         <revision>0.0.1-SNAPSHOT</revision>
         <java.version>21</java.version>
-        <os.detected.classifier>osx-x86_64</os.detected.classifier>
         <version.opennms.integration.api>1.6.0</version.opennms.integration.api>
     </properties>
     <dependencies>
@@ -105,5 +104,12 @@
                 </executions>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <version>1.7.0</version>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+            </extension>
+        </extensions>
     </build>
 </project>

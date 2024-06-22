@@ -6,6 +6,7 @@ help:
 	@echo "help:        Show this help"
 	@echo "compile:     Compile the source code"
 	@echo "tests:       Build the source code and run tests."
+	@echo "build:       Run a clean build with mvn install -DskipTests"
 	@echo "clean:       Clean build artifacts"
 	@echo ""
 
@@ -24,5 +25,10 @@ compile: deps
 tests:
 	mvn test
 
+.PHONY: build
+build: clean
+	mvn install -DskipTests
+
+.PHONY: clean
 clean:
 	mvn clean

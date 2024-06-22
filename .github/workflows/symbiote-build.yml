@@ -5,7 +5,7 @@ on:
   push:
 
 jobs:
-  quick-smoke:
+  build:
     runs-on: ubuntu-latest
     container:
       image: quay.io/bluebird/java-builder:0.0.1.jdk-21.b24
@@ -13,9 +13,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build from source without expensive tasks
+      - name: Build from source
         run: |
-          make
+          make build
       - name: Run tests
         run: |
           make tests
