@@ -26,7 +26,7 @@ tests:
 	mvn test
 
 .PHONY: build
-build: clean
+build:
 	mvn install -DskipTests
 
 .PHONY: clean
