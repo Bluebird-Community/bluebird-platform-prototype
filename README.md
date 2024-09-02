@@ -1,6 +1,6 @@
 # Symbionte Prototype
 
-**NOTE: THIS IS A PROTOTYPE**
+**NOTE: This documentation is outdated**
 
 The `Symbiote Prototype` consumes `OpenNMS Horizon` events (implementd), alarms (not implemented) and nodes (not implemented) to allow working on the conceptional debt mentioned [here](https://opennms.discourse.group/t/the-future-of-opennms-horizon/3952).
 
@@ -11,8 +11,6 @@ The `Symbiote` listens to `OpenNMS Horizon` events - sent by the `KafkaEventProd
 Besides this it implements a very basic event escalation model (similar to the OpenNMS Horizon's one). If an event is escalated to an alarm, it is persisted to a (temporary) postgres database table: `alarms`.
 
 ## Alarm Definition Model
-
-**NOTE: This is a prototype, proof-of-concept**
 
 An alarm is defined as follows:
 
@@ -44,8 +42,6 @@ In addition to the clear and raise definition a `level` and a `severity` must be
 At the moment the alarm definitions are automatically calculated on the basis of the `OpenNMS Horizon event configuration`. See class `OpennmsAlarmDefinitionProvider` for more details.
 
 ### Alarm Propagation
-
-**NOTE: This is a prototype, proof-of-concept**
 
 If an alarm is created, an according `alarmPropagation/${originalEvent.uei}` event is sent out, with a consolidation key of `"alarmPropagation/${originalEvent.consolidationKey}/level=${originalEvent.level == null ? 0 : 1}:${originalEvent.level == null ? 1 : originalEvelt.level + 1}"`.
 This allows for alarm definitions to "listen" for these events and therefore allow implementing a very basic alarm propagation model.
@@ -85,8 +81,6 @@ At the moment there are two implementations available by default:
 6. No difference between `reductionKey` and `clearKey`. An event defines a `consolidationKey`. If a matching is done on `clear` or `raise` condition defines if it is a clearing or raising event.
 
 ## Event Model
-
-**NOTE: This is a prototype, proof-of-concept**
 
 There are two implemented event models: `EventLogEntity` and `EventDTO`.
 At the moment only `EventDTO` is used.

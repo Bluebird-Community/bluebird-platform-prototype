@@ -1,8 +1,8 @@
 package org.bluebird.platform.eventbus.internal;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bluebird.platform.engine.events.EventDTO;
-import org.bluebird.platform.persistence.repository.EventRepository;
+import org.bluebird.platform.domain.model.EventDTO;
+import org.bluebird.platform.persistence.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -17,7 +17,7 @@ public class GlobalEventListener {
 
     @EventListener
     @Order(Integer.MIN_VALUE)
-    public void onEvent(EventDTO<?> eventDTO) {
+    public void onEvent(EventDTO eventDTO) {
         eventRepository.save(eventDTO);
     }
 
