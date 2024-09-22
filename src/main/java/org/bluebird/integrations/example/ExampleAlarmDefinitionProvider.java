@@ -1,7 +1,6 @@
-package org.bluebird.integrations.dummy;
+package org.bluebird.integrations.example;
 
 
-import org.bluebird.integrations.opennms.events.OpennmsConsolidationKeyProviders;
 import org.bluebird.platform.domain.alarms.AlarmDefinition;
 import org.bluebird.platform.domain.alarms.AlarmDefinitionProvider;
 import org.bluebird.platform.domain.conditions.EventConditions;
@@ -11,24 +10,24 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class DummyAlarmDefinitionProvider implements AlarmDefinitionProvider {
+public class ExampleAlarmDefinitionProvider implements AlarmDefinitionProvider {
 
     @Override
     public List<AlarmDefinition> getAlarmDefinitions() {
         final var keyTemplate = "%key%";
         return List.of(
                 AlarmDefinition.newBuilder()
-                        .withDescription("Dummy description")
+                        .withDescription("Example description")
                         .withUei("alarmPropagation/uei.opennms.org/nodes/nodeDown")
                         .withLevel(2)
                         .withSeverity(AlarmSeverity.MAJOR)
                         .withRaise(
                                 EventConditions.matchesUei("alarmPropagation/uei.opennms.org/nodes/nodeDown"),
-                                OpennmsConsolidationKeyProviders.template(keyTemplate)
+                                keyTemplate
                         )
                         .withClear(
                                 EventConditions.matchesUei("alarmPropagation/uei.opennms.org/nodes/nodeUp"),
-                                OpennmsConsolidationKeyProviders.template(keyTemplate)
+                                keyTemplate
                         ).build(),
                 AlarmDefinition.newBuilder()
                         .withDescription("Dummy description 2")
@@ -37,7 +36,7 @@ public class DummyAlarmDefinitionProvider implements AlarmDefinitionProvider {
                         .withSeverity(AlarmSeverity.CRITICAL)
                         .withRaise(
                                 EventConditions.matchesUei("alarmPropagation/alarmPropagation/uei.opennms.org/nodes/nodeDown"),
-                                OpennmsConsolidationKeyProviders.template(keyTemplate)
+                                keyTemplate
                         )
 //                        .withClear(
 //                                EventConditions.matchesUei("alarmPropagation/alarmPropagation/uei.opennms.org/nodes/nodeUp"),
