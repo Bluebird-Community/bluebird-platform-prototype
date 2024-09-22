@@ -1,8 +1,6 @@
 package org.bluebird.platform.eventbus.kafka;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.bluebird.integrations.opennms.kafka.OpennmsKafkaConsumerConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +10,6 @@ import java.util.Map;
 
 // Global Spring Kafka Configuration
 @Configuration
-@ConditionalOnBean(OpennmsKafkaConsumerConfiguration.class)
-// TODO MVR the overall kafka configuration should not be related to the opennms kafka integration configuration
 public class KafkaConfiguration {
 
     @Bean

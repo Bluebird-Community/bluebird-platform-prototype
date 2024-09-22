@@ -25,6 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventDTO {
+
     @Id
     private UUID id;
     private String namespace;
@@ -32,21 +33,24 @@ public class EventDTO {
     private String uei; // TODO MVR find another naming for this
     private String source; // the source of event (e.g. a system, software, etc.)
     private LocalDateTime creationTime;
-    private Integer level;
-
     private String consolidationKey; // Key to consolidate on
 
     @ElementCollection
     @CollectionTable(name = "0_symbiont_event_properties")
     private Map<String, String> properties = new HashMap<>();
 
-    //    private Integer payloadVersion; // version > 0
-//    private String payloadType; // The type of the payload
-    @Transient // TODO MVR jsonp
-//    private T payload; // Optional
-
+    @Transient
     public EventRef asRef() {
         return new EventRef(namespace, ref);
     }
 
+    public Map<String, String> asMap() {
+        final var map = new HashMap<>(properties);
+        // TODO MVR ensure all fields are actually used here in the future
+        map.put("namespace", namespace);
+        map.put("ref", ref);
+        map.put("uei", uei);
+        map.put("source", source);
+        return map;
+    }
 }

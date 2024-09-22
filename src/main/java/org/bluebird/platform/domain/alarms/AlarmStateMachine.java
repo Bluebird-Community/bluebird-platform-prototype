@@ -1,14 +1,10 @@
 package org.bluebird.platform.domain.alarms;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
-import org.bluebird.integrations.opennms.events.substitution.OpennmsEventRenderContext;
-import org.bluebird.integrations.opennms.events.substitution.OpennmsEventTemplateRenderer;
-import org.bluebird.integrations.opennms.persistence.OpennmsEventRepository;
-import org.bluebird.integrations.opennms.persistence.OpennmsNodeRepository;
-import org.bluebird.platform.domain.model.EventDTO;
+import org.bluebird.platform.domain.consolidationkey.ConsolidationKeyRenderer;
 import org.bluebird.platform.domain.model.AlarmDTO;
 import org.bluebird.platform.domain.model.AlarmStateEnum;
+import org.bluebird.platform.domain.model.EventDTO;
 import org.bluebird.platform.persistence.AlarmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,14 +23,16 @@ public class AlarmStateMachine {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    // TODO MVR ...
     @Autowired
-    private OpennmsEventRepository opennmsEventRepository;
+    private ConsolidationKeyRenderer consolidationKeyRenderer;
 
+    // TODO MVR let's disable this for now and see if we actually need this
     @Value("${org.bluebird.alarm.propagation.enabled}")
     private Boolean propagateAlarms;
 
-    @Autowired
-    private OpennmsEventTemplateRenderer templateRenderer;
+//    @Autowired
+//    private OpennmsEventTemplateRenderer templateRenderer;
 
     @Transactional
     public void handle(AlarmDefinition alarmDefinition, EventDTO event) {
@@ -52,8 +50,7 @@ public class AlarmStateMachine {
     private void handleCreate(AlarmDefinition alarmDefinition, EventDTO event) {
         final var alarm = createAlarm(event, alarmDefinition);
         // TODO MVR this should be more dynamic and be delegated to the type or source of the event instead
-        final var context = new OpennmsEventRenderContext(event, opennmsEventRepository.getReferenceById(Integer.parseInt(event.getRef())));
-        final var reductionKey = templateRenderer.render(context, alarmDefinition.getRaiseKey());
+        final var reductionKey = consolidationKeyRenderer.render(alarmDefinition.getRaiseKey(), event);
         alarm.setConsolidationKey(reductionKey);
         alarmRepository.save(alarm);
         if (propagateAlarms) {
@@ -68,8 +65,7 @@ public class AlarmStateMachine {
                 .withNamespace("internal")
                 .withRef(alarm.getId().toString())
                 .withSource(getClass().getSimpleName())
-                .withConsolidationKey("alarmPropagation/%s/level=%s:%s".formatted(alarm.getConsolidationKey(), alarm.getLevel(), alarm.getLevel() + 1))
-                .withLevel(alarm.getLevel());
+                .withConsolidationKey("alarmPropagation/%s/level=%s:%s".formatted(alarm.getConsolidationKey(), alarm.getLevel(), alarm.getLevel() + 1));
     }
 
     private void handleUpdate(AlarmDefinition alarmDefinition, EventDTO event, AlarmDTO alarm) {

@@ -57,20 +57,21 @@ public final class EventConditions extends Conditions {
         };
     }
 
-    public static EventCondition matchesLevel(int level) {
-        return new EventCondition() {
-
-            @Override
-            public String getDescription() {
-                return "level == %s".formatted(level);
-            }
-
-            @Override
-            public boolean matches(EventDTO event) {
-                return event.getLevel() != null && event.getLevel() == level;
-            }
-        };
-    }
+    // TODO MVR ...
+//    public static EventCondition matchesLevel(int level) {
+//        return new EventCondition() {
+//
+//            @Override
+//            public String getDescription() {
+//                return "level == %s".formatted(level);
+//            }
+//
+//            @Override
+//            public boolean matches(EventDTO event) {
+//                return event.getLevel() != null && event.getLevel() == level;
+//            }
+//        };
+//    }
 
     public static EventCondition matchesNullValue(String fieldName, Function<EventDTO, Object> valueExtractor) {
         Objects.requireNonNull(fieldName);
@@ -90,10 +91,11 @@ public final class EventConditions extends Conditions {
         };
     }
 
-    public static Condition<EventDTO> nullOrZeroLevel() {
-        return Conditions.or(
-                EventConditions.matchesNullValue("level", EventDTO::getLevel),
-                EventConditions.matchesLevel(0)
-        );
-    }
+    // TODO MVR ...
+//    public static Condition<EventDTO> nullOrZeroLevel() {
+//        return Conditions.or(
+//                EventConditions.matchesNullValue("level", EventDTO::getLevel),
+//                EventConditions.matchesLevel(0)
+//        );
+//    }
 }
