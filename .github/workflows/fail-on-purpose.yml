@@ -1,0 +1,13 @@
+name: Build and Fail
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build_and_fail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail on purpose
+        run: grup
