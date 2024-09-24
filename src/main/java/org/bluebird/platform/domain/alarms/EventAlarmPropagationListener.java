@@ -39,9 +39,9 @@ public class EventAlarmPropagationListener {
 
     // TODO MVR ...
     private static boolean shouldProcess(final EventDTO event) {
-        return true;
+        return
 //                && Objects.equals(event.getProperties().get("log"), "true") // TODO MVR this is not handled correctly by protobuf producer
-//                event.getConsolidationKey() != null && !event.getConsolidationKey().isEmpty();
+                event.getConsolidationKey() != null && !event.getConsolidationKey().isEmpty();
     }
 
 }

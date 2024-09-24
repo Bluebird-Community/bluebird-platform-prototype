@@ -19,10 +19,16 @@ public class GithubActionAlarmDefinitionProvider implements AlarmDefinitionProvi
                         .withLabel("Workflow failed")
                         .withSeverity(AlarmSeverity.MAJOR)
                         .withRaiseCondition(
-                                EventConditions.not(EventConditions.matches("workflow_run.conclusion", "success"))
+                                EventConditions.and(
+                                        EventConditions.matches("workflow_run.status", "completed"),
+                                        EventConditions.not(EventConditions.matches("workflow_run.conclusion", "success"))
+                                )
                         )
                         .withClearCondition(
-                                EventConditions.matches("workflow_run.conclusion", "success")
+                                EventConditions.and(
+                                        EventConditions.matches("workflow_run.status", "completed"),
+                                        EventConditions.matches("workflow_run.conclusion", "success")
+                                )
                         )
                         .build()
         );
