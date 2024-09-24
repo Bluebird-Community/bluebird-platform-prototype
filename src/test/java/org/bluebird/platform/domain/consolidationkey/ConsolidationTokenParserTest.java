@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 class ConsolidationTokenParserTest {
 
     private static final ConsolidationToken TOKEN_COLON = new ConsolidationToken(":", ConsolidationTokenType.CONSTANT);
+    private static final ConsolidationToken TOKEN_SLASH = new ConsolidationToken("/", ConsolidationTokenType.CONSTANT);
 
     private static ConsolidationToken constant(String token) {
         return new ConsolidationToken(token, ConsolidationTokenType.CONSTANT);
@@ -30,6 +31,10 @@ class ConsolidationTokenParserTest {
                         Tuple.of(
                                 "uei.opennms.org/nodes/snmp/interfaceOperDown:{dpname}:{nodeid}:1234test",
                                 List.of(constant("uei.opennms.org/nodes/snmp/interfaceOperDown:"), param("dpname"), TOKEN_COLON, param("nodeid"), constant(":1234test"))
+                        ),
+                        Tuple.of(
+                                "{namespace}/{repository.owner.login}/{repository.name}/workflows/{workflow.id}",
+                                List.of(param("namespace"), TOKEN_SLASH, param("repository.owner.login"), TOKEN_SLASH, param("repository.name"), constant("/workflows/"), param("workflow.id"))
                         )
                 )
                 .map(tuple -> {

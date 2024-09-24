@@ -49,8 +49,7 @@ public class AlarmStateMachine {
 
     private void handleCreate(AlarmDefinition alarmDefinition, EventDTO event) {
         final var alarm = createAlarm(event, alarmDefinition);
-        // TODO MVR this should be more dynamic and be delegated to the type or source of the event instead
-        final var reductionKey = consolidationKeyRenderer.render(alarmDefinition.getRaiseKey(), event);
+        final var reductionKey = event.getConsolidationKey();
         alarm.setConsolidationKey(reductionKey);
         alarmRepository.save(alarm);
         if (propagateAlarms) {
@@ -61,7 +60,7 @@ public class AlarmStateMachine {
     private EventDTO createEventFrom(EventDTO origin, AlarmDTO alarm) {
         return new EventDTO()
                 .withId(UUID.randomUUID()) // TODO MVR this must be done by the database
-                .withUei("alarmPropagation/%s".formatted(origin.getUei()))
+                .withNamespace("alarmPropagation/%s".formatted(origin.getNamespace()))
                 .withNamespace("internal")
                 .withRef(alarm.getId().toString())
                 .withSource(getClass().getSimpleName())

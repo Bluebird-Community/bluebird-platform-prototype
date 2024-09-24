@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class ConsolidationTokenParser {
 
     public List<ConsolidationToken> parse(String input) {
-        final var matcher = Pattern.compile("\\{([a-zA-Z-_0-9]+)\\}").matcher(input);
+        final var matcher = Pattern.compile("\\{([a-zA-Z-_0-9]+(\\.[a-zA-Z-_0-9]+)*)\\}").matcher(input);
         final var tokens = new ArrayList<ConsolidationToken>();
         var startIndex = 0;
         while (matcher.find()) {

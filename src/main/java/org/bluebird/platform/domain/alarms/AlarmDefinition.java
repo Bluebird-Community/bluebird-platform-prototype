@@ -10,11 +10,9 @@ import java.util.Objects;
 
 @Getter
 public class AlarmDefinition {
-    private final String uei;
+    private final String namespace;
     private final Condition<EventDTO> raiseCondition;
     private final Condition<EventDTO> clearCondition;
-    private final String raiseKey;
-    private final String clearKey;
     private final String label;
     private final String description;
     private final AlarmSeverity severity;
@@ -25,42 +23,34 @@ public class AlarmDefinition {
         // TODO MVR add validation ...
         this.raiseCondition = builder.raiseCondition;
         this.clearCondition = builder.clearCondition;
-        this.raiseKey = builder.raiseKey;
-        this.clearKey = builder.clearKey;
-        this.uei = builder.uei;
+        this.namespace = builder.namespace;
         this.label = builder.label;
         this.description = builder.description;
         this.severity = builder.severity;
         this.level = builder.level == null || builder.level <= 0 ? 1 : builder.level;
-        if (raiseKey != null && clearKey != null && !Objects.equals(raiseKey, clearKey)) {
-            throw new IllegalStateException("This alarm can never be resolved by the provided alarm definition");
-        }
     }
 
     public String getDescription() {
         return """
-                UEI: %s
+                Namespace: %s
                 Label: %s
                 Description: %s
                 Severity: %s
                 Level: %s
                 Raise:
                     on: %s
-                    key: %s
                 Clear:
                     on: %s
-                    key: %s
                 """
                 .formatted(
-                        uei,
+                        namespace,
                         label,
                         description,
                         severity,
                         level,
                         ident(raiseCondition.getDescription()),
-                        ident(raiseKey),
-                        ident(clearCondition.getDescription()),
-                        ident(clearKey));
+                        ident(clearCondition.getDescription()))
+                ;
     }
 
     private static String ident(String value) {
@@ -79,11 +69,9 @@ public class AlarmDefinition {
         private Condition<EventDTO> clearCondition = Conditions.none();
         private AlarmSeverity severity;
         private String label;
-        private String uei;
+        private String namespace;
         private Integer level;
         private String description;
-        private String raiseKey;
-        private String clearKey;
 
         private Builder() {
 
@@ -99,8 +87,8 @@ public class AlarmDefinition {
             return this;
         }
 
-        public Builder withUei(String uei) {
-            this.uei = uei;
+        public Builder withNamespace(String namespace) {
+            this.namespace = namespace;
             return this;
         }
 
@@ -111,18 +99,6 @@ public class AlarmDefinition {
 
         public Builder withLevel(Integer level) {
             this.level = level;
-            return this;
-        }
-
-        public Builder withRaise(Condition<EventDTO> condition, String raiseKey) {
-            this.raiseCondition = Objects.requireNonNull(condition);
-            this.raiseKey = raiseKey;
-            return this;
-        }
-
-        public Builder withClear(Condition<EventDTO> condition, String clearKey) {
-            this.clearCondition = Objects.requireNonNull(condition);
-            this.clearKey = clearKey;
             return this;
         }
 

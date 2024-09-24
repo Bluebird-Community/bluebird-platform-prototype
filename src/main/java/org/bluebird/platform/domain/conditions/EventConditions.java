@@ -2,6 +2,8 @@ package org.bluebird.platform.domain.conditions;
 
 import org.bluebird.platform.domain.model.EventDTO;
 
+import java.beans.BeanDescriptor;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -43,35 +45,19 @@ public final class EventConditions extends Conditions {
         };
     }
 
-    public static EventCondition matchesUei(final String uei) {
+    public static EventCondition matchesNamespace(final String namespace) {
         return new EventCondition() {
             @Override
             public String getDescription() {
-                return "uei == '%s'".formatted(uei);
+                return "namespace == '%s'".formatted(namespace);
             }
 
             @Override
             public boolean matches(EventDTO event) {
-                return event.getUei().equals(uei);
+                return event.getNamespace().equals(namespace);
             }
         };
     }
-
-    // TODO MVR ...
-//    public static EventCondition matchesLevel(int level) {
-//        return new EventCondition() {
-//
-//            @Override
-//            public String getDescription() {
-//                return "level == %s".formatted(level);
-//            }
-//
-//            @Override
-//            public boolean matches(EventDTO event) {
-//                return event.getLevel() != null && event.getLevel() == level;
-//            }
-//        };
-//    }
 
     public static EventCondition matchesNullValue(String fieldName, Function<EventDTO, Object> valueExtractor) {
         Objects.requireNonNull(fieldName);
@@ -91,11 +77,56 @@ public final class EventConditions extends Conditions {
         };
     }
 
-    // TODO MVR ...
-//    public static Condition<EventDTO> nullOrZeroLevel() {
-//        return Conditions.or(
-//                EventConditions.matchesNullValue("level", EventDTO::getLevel),
-//                EventConditions.matchesLevel(0)
-//        );
-//    }
+    public static EventCondition matches(String eventParameterPath, String expectedValue) {
+        Objects.requireNonNull(eventParameterPath);
+        Objects.requireNonNull(expectedValue);
+        return new EventCondition() {
+
+            @Override
+            public String getDescription() {
+                return "%s matches %s".formatted(eventParameterPath, expectedValue);
+            }
+
+            // TODO MVR refactory this, as it is ugly as hell, but should work for now
+            @Override
+            public boolean matches(EventDTO event) {
+                if (!eventParameterPath.contains(".")) {
+                    return event.asMap().get(eventParameterPath).equals(expectedValue);
+                }
+                final var path = eventParameterPath.split("\\.");
+                Object payload = event.getPayload();
+                for (int i = 0; i < path.length; i++) {
+                    if (i < path.length - 1) {
+                        if (payload instanceof Map<?, ?>) {
+                            payload = ((Map<?, ?>) payload).get(path[i]);
+                        } else if (payload instanceof Object) { // Try bean access
+                            payload = new BeanDescriptor(payload.getClass()).getValue(path[i]);
+                        }
+                    } else {
+                        if (payload instanceof Map<?, ?>) {
+                            return Objects.equals(((Map<?, ?>) payload).get(path[i]), expectedValue);
+                        } else if (payload instanceof Object) {  // Try bean access
+                            return Objects.equals(new BeanDescriptor(payload.getClass()).getValue(path[i]), expectedValue);
+                        }
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
+    public static EventCondition not(EventCondition condition) {
+        return new EventCondition() {
+
+            @Override
+            public String getDescription() {
+                return "not (%s)".formatted(condition.getDescription());
+            }
+
+            @Override
+            public boolean matches(EventDTO event) {
+                return !condition.matches(event);
+            }
+        };
+    }
 }
