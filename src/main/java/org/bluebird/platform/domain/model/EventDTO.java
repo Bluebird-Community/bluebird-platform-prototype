@@ -49,6 +49,7 @@ public class EventDTO {
         return new EventRef(namespace, ref);
     }
 
+    // TODO MVR remove this?
     public Map<String, Object> asMap() {
         final Map<String, Object> map = new HashMap<>(headers);
         map.put("namespace", namespace);

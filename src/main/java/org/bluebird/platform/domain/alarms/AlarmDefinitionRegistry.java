@@ -27,6 +27,7 @@ public class AlarmDefinitionRegistry {
         log.info("Found the following alarm definitions:\n{}", alarmDefinitionLog);
     }
 
+    // TODO MVR this is probably very very slow if we have a lot of events and alarm definitions. Must find a faster way for "look up"
     public List<AlarmDefinition> findAlarmDefinitions(EventDTO event) {
         return providers.stream()
                 .flatMap(it -> it.getAlarmDefinitions().stream())

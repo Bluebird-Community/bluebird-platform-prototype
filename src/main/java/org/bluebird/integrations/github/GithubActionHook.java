@@ -30,6 +30,7 @@ public class GithubActionHook {
                 .filter(it -> it.startsWith("x-"))
                 .collect(Collectors.toMap(it -> it, headers::get));
         final var namespace = "github.com/payloads/%s".formatted(headers.get("x-github-event"));
+        // TODO MVR => add something like canRender or similar to the renderer, so we can skip rendering, if not all properties are defined
         final var consolidationKeyTemplate = "{namespace}/{payload.repository.owner.login}/{payload.repository.name}/workflows/{payload.workflow.id}";
         final var event = new EventDTO()
                 .withId(UUID.randomUUID()) // TODO MVR automatically assign id when persisting. must be fixed

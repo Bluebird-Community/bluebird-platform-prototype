@@ -4,5 +4,4 @@ import java.util.List;
 
 public interface AlarmDefinitionProvider {
     List<AlarmDefinition> getAlarmDefinitions();
-
 }
