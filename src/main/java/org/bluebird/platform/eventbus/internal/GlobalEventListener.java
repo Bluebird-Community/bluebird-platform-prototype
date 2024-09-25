@@ -1,19 +1,19 @@
 package org.bluebird.platform.eventbus.internal;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bluebird.platform.domain.model.EventDTO;
 import org.bluebird.platform.persistence.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class GlobalEventListener {
 
-    @Autowired
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     @EventListener
     @Order(Integer.MIN_VALUE)
