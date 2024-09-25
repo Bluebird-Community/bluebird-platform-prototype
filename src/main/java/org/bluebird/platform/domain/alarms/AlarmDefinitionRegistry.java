@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,9 +29,11 @@ public class AlarmDefinitionRegistry {
     }
 
     // TODO MVR this is probably very very slow if we have a lot of events and alarm definitions. Must find a faster way for "look up"
+    // TODO MVR also verify that the lookup here is actually what we want
     public List<AlarmDefinition> findAlarmDefinitions(EventDTO event) {
         return providers.stream()
                 .flatMap(it -> it.getAlarmDefinitions().stream())
+                .filter(it -> it.getNamespace() != null && Objects.equals(it.getNamespace(), event.getNamespace()))
                 .filter(it -> it.getClearCondition().matches(event) || it.getRaiseCondition().matches(event))
                 // If an event matches both conditions it is not possible, so we ignore it for now
                 .filter(it -> !(it.getRaiseCondition().matches(event) && it.getClearCondition().matches(event)))

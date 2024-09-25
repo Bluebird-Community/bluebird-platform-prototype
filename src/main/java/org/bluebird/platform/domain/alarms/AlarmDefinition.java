@@ -23,11 +23,14 @@ public class AlarmDefinition {
         // TODO MVR add validation ...
         this.raiseCondition = builder.raiseCondition;
         this.clearCondition = builder.clearCondition;
-        this.namespace = builder.namespace;
+        this.namespace = builder.namespace == null ? null : builder.namespace.trim();
         this.label = builder.label;
         this.description = builder.description;
         this.severity = builder.severity;
         this.level = builder.level == null || builder.level <= 0 ? 1 : builder.level;
+        if (namespace == null || namespace.isEmpty()) {
+            throw new IllegalArgumentException("namespace cannot be null or empty");
+        }
     }
 
     public String getDescription() {
